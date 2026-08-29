@@ -21,12 +21,14 @@
     .logo { font-family:Fraunces,serif; font-size:22px; }
     .btn { min-height:44px; display:inline-flex; align-items:center; padding:0 22px; background:var(--brass); color:var(--ink); font-size:14px; font-weight:500; }
     .btn-ghost { min-height:44px; display:inline-flex; align-items:center; padding:0 22px; border:1px solid rgba(243,238,230,.3); font-size:14px; }
-    .hero { position:relative; height:240vh; }
+    .hero { position:relative; height:260vh; }
     .hero-sticky { position:sticky; top:0; height:100dvh; overflow:hidden; }
-    .hero-sticky video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-    .veil { position:absolute; inset:0; background:linear-gradient(90deg, rgba(26,22,18,.85), rgba(26,22,18,.4), transparent); }
-    .hero-copy { position:relative; z-index:2; height:100%; max-width:40rem; display:flex; flex-direction:column; justify-content:flex-end; gap:1.25rem; padding:7rem 20px 4rem;
+    .hero-sticky canvas { position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+    .hero-sticky .poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+    .veil { position:absolute; inset:0; z-index:2; background:linear-gradient(90deg, rgba(26,22,18,.85), rgba(26,22,18,.4), transparent); }
+    .hero-copy { position:relative; z-index:3; height:100%; max-width:40rem; display:flex; flex-direction:column; justify-content:flex-end; gap:1.25rem; padding:7rem 20px 4rem;
       transform: translate3d(0, calc(var(--hero-p) * -48px), 0); opacity: calc(1 - var(--hero-p) * .55); }
+    .scroll-cue { font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:rgba(243,238,230,.5); opacity: calc(1 - var(--hero-p) * 3.5); }
     .kicker { color:var(--brass); font-size:13px; letter-spacing:.18em; text-transform:uppercase; }
     h1 { font-family:Fraunces,serif; font-size:clamp(2rem,6vw,3.6rem); line-height:1.08; font-weight:400; margin:0; }
     h2 { font-family:Fraunces,serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:400; line-height:1.15; margin:0; }
@@ -70,9 +72,8 @@
 
   <section class="hero" id="top">
     <div class="hero-sticky">
-      <video id="hero-video" muted playsinline preload="auto" poster="/hero.jpg" disablepictureinpicture>
-        <source src="/hero.mp4" type="video/mp4" />
-      </video>
+      <canvas id="hero-canvas"></canvas>
+      <img class="poster" src="/hero.jpg" alt="" />
       <div class="veil"></div>
       <div class="hero-copy">
         <p class="kicker">Алматы · Достык 97</p>
@@ -82,6 +83,7 @@
           <a class="btn" href="https://wa.me/77763332266">WhatsApp · +7 776 333 22 66</a>
           <a class="btn-ghost" href="tel:+77763332266">Позвонить</a>
         </div>
+        <p class="scroll-cue">Листайте</p>
       </div>
     </div>
   </section>
@@ -162,54 +164,102 @@
     </div>
     <p class="fine">Лицензия № 20009729</p>
   </footer>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.8/dist/lenis.min.js"></script>
   <script>
     (function () {
-      var video = document.getElementById('hero-video');
+      var TOTAL = 121;
+      var canvas = document.getElementById('hero-canvas');
       var pin = document.getElementById('top');
-      if (!video || !pin) return;
-      video.autoplay = false;
-      video.loop = false;
-      video.muted = true;
-      video.playsInline = true;
-      video.controls = false;
-      video.pause();
+      if (!canvas || !pin || !window.gsap) return;
+      var gsap = window.gsap;
+      gsap.registerPlugin(window.ScrollTrigger);
+      var ctx = canvas.getContext('2d', { alpha: false });
+      if (!ctx) return;
+      var images = new Array(TOTAL);
+      var proxy = { val: 0 };
+
+      function pad(n) { return String(n).padStart(3, '0'); }
+      function coverDraw(img) {
+        var w = canvas.width, h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        var ir = img.width / img.height, cr = w / h;
+        var dw, dh, dx, dy;
+        if (ir > cr) { dh = h; dw = h * ir; dx = (w - dw) / 2; dy = 0; }
+        else { dw = w; dh = w / ir; dx = 0; dy = (h - dh) / 2; }
+        ctx.drawImage(img, dx, dy, dw, dh);
+      }
+      function draw(val) {
+        var i = Math.max(0, Math.min(TOTAL - 1, Math.round(val)));
+        var img = images[i];
+        if (!img || !img.complete || !img.naturalWidth) return;
+        coverDraw(img);
+      }
+      function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = Math.round(window.innerWidth * dpr);
+        canvas.height = Math.round(window.innerHeight * dpr);
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        draw(proxy.val);
+      }
+      function loadOne(i) {
+        return new Promise(function (resolve) {
+          var img = new Image();
+          img.onload = function () { resolve(); };
+          img.onerror = function () { resolve(); };
+          img.src = '/frames/hero_' + pad(i + 1) + '.jpg';
+          images[i] = img;
+        });
+      }
+
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        video.currentTime = 0;
+        loadOne(0).then(function () { resize(); draw(0); });
+        window.addEventListener('resize', resize);
         return;
       }
-      var raf = 0;
-      var unlocked = false;
-      var unlocking = false;
-      function progress() {
-        var total = Math.max(pin.offsetHeight - window.innerHeight, 1);
-        var p = Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / total));
-        if (video.readyState >= 1 && isFinite(video.duration) && video.duration > 0) {
-          var t = p * Math.max(video.duration - 0.05, 0);
-          if (Math.abs(video.currentTime - t) > 0.01) video.currentTime = t;
-        }
-        document.documentElement.style.setProperty('--hero-p', p.toFixed(4));
-      }
-      function onScroll() {
-        cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(progress);
-      }
-      function unlock() {
-        if (unlocked || unlocking) return;
-        unlocking = true;
-        var play = video.play();
-        function freeze() {
-          video.pause();
-          unlocking = false;
-          unlocked = true;
-          progress();
-        }
-        if (play && play.then) play.then(freeze).catch(function () { unlocking = false; });
-        else freeze();
-      }
-      video.addEventListener('play', function () { if (!unlocking) video.pause(); });
-      video.addEventListener('loadedmetadata', progress);
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll);
+
+      loadOne(0).then(function () {
+        resize();
+        draw(0);
+        var rest = [];
+        for (var i = 1; i < TOTAL; i++) rest.push(loadOne(i));
+        return Promise.all(rest);
+      }).then(function () {
+        resize();
+        draw(0);
+        var LenisCtor = window.Lenis;
+        var lenis = new LenisCtor({
+          duration: 1.2,
+          easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+          smoothWheel: true
+        });
+        lenis.on('scroll', window.ScrollTrigger.update);
+        gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+        gsap.to(proxy, {
+          val: TOTAL - 1,
+          ease: 'none',
+          onUpdate: function () {
+            draw(proxy.val);
+            document.documentElement.style.setProperty('--hero-p', (proxy.val / (TOTAL - 1)).toFixed(4));
+          },
+          scrollTrigger: {
+            trigger: pin,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 0.6
+          }
+        });
+        requestAnimationFrame(function () { window.ScrollTrigger.refresh(); });
+      });
+      window.addEventListener('resize', resize);
+    })();
+  </script>
+</body>
+</html>
+ntListener('resize', onScroll);
       window.addEventListener('wheel', unlock, { passive: true, once: true });
       window.addEventListener('touchstart', unlock, { passive: true, once: true });
       window.addEventListener('pointerdown', unlock, { passive: true, once: true });
