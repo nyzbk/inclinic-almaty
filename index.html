@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InClinic — Алматы, Достык 97</title>
+  <meta name="description" content="InClinic на Достык 97. 4.9 в 2ГИС, 1089 оценок. Запись по телефону +7 776 333 2266. Демо-сайт." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1A1612" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1612;
+      --stone: #2a2420;
+      --paper: #e8dfd2;
+      --cream: #f3eee6;
+      --muted: #b8a99a;
+      --brass: #c4a574;
+      --brass-deep: #8c7048;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: Outfit, ui-sans-serif, system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, video { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .banner {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: var(--brass); color: var(--ink);
+      text-align: center; font-size: 12px; letter-spacing: .04em;
+      padding: 8px 16px;
+    }
+    header {
+      position: fixed; top: 32px; left: 0; right: 0; z-index: 40;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 16px 20px;
+    }
+    .logo { font-family: Fraunces, serif; font-size: 22px; }
+    .btn {
+      min-height: 44px; display: inline-flex; align-items: center;
+      padding: 0 22px; background: var(--brass); color: var(--ink);
+      font-size: 14px; font-weight: 500;
+    }
+    .btn-ghost {
+      min-height: 44px; display: inline-flex; align-items: center;
+      padding: 0 22px; border: 1px solid rgba(243,238,230,.3); font-size: 14px;
+    }
+    .hero { position: relative; min-height: 100dvh; }
+    .hero-sticky { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
+    .hero-sticky video, .hero-sticky img.fallback {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .veil {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(26,22,18,.82), rgba(26,22,18,.35), transparent);
+    }
+    .hero-copy {
+      position: relative; z-index: 2; height: 100%;
+      max-width: 36rem; display: flex; flex-direction: column; justify-content: flex-end;
+      gap: 1.25rem; padding: 8rem 20px 4rem;
+    }
+    .kicker { color: var(--brass); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { font-family: Fraunces, serif; font-size: clamp(2.6rem, 8vw, 4.5rem); line-height: 1.05; font-weight: 400; margin: 0; }
+    h2 { font-family: Fraunces, serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 400; line-height: 1.15; margin: 0; }
+    .lead { max-width: 28rem; line-height: 1.6; color: rgba(243,238,230,.88); }
+    .row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .paper { background: var(--paper); color: var(--ink); padding: 5rem 20px; }
+    .quotes { display: grid; gap: 2.5rem; margin-top: 3rem; }
+    figure { margin: 0; padding-top: 1.25rem; border-top: 1px solid rgba(26,22,18,.15); }
+    blockquote { margin: 0; font-family: Fraunces, serif; font-size: 1.25rem; line-height: 1.35; }
+    figcaption { margin-top: 1rem; font-size: 13px; color: rgba(42,36,32,.7); }
+    .split { display: grid; }
+    .split img { width: 100%; height: 70vh; object-fit: cover; }
+    .split-copy { display: flex; flex-direction: column; justify-content: center; gap: 1.25rem; padding: 4rem 20px; }
+    .muted { color: var(--muted); max-width: 28rem; line-height: 1.65; }
+    .stills { display: grid; gap: 1.5rem; }
+    .stills img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+    footer { border-top: 1px solid rgba(243,238,230,.1); padding: 4rem 20px; }
+    .foot { display: flex; flex-direction: column; gap: 2rem; }
+    .fine { margin-top: 3rem; font-size: 12px; color: var(--muted); }
+    @media (min-width: 768px) {
+      header, .hero-copy, .paper, footer { padding-left: 3rem; padding-right: 3rem; }
+      .quotes, .stills { grid-template-columns: 1fr 1fr 1fr; }
+      .split { grid-template-columns: 1fr 1fr; }
+      .foot { flex-direction: row; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <p class="banner">Демо. Визуал не фото этой клиники. Запись — по их телефону.</p>
+  <header>
+    <a class="logo" href="#top">InClinic</a>
+    <a class="btn" href="tel:+77763332266">Записаться</a>
+  </header>
+  <section class="hero" id="top">
+    <div class="hero-sticky">
+      <video autoplay muted loop playsinline poster="/hero.jpg">
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
+      <img class="fallback" src="/hero.jpg" alt="" style="display:none" />
+      <div class="veil"></div>
+      <div class="hero-copy">
+        <p class="kicker">Алматы · Достык 97</p>
+        <h1>Спокойно.<br />Без спешки.</h1>
+        <p class="lead">Семейная стоматология в ЖК Самал Де Люкс. 4.9 в 2ГИС — 1089 оценок. Ежедневно с 9:00 до 21:00.</p>
+        <div class="row">
+          <a class="btn" href="tel:+77763332266">+7 776 333 2266</a>
+          <a class="btn-ghost" href="https://2gis.kz/almaty/firm/70000001043854986" target="_blank" rel="noreferrer">Открыть в 2ГИС</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="paper">
+    <p class="kicker" style="color:var(--brass-deep)">Почему сюда ходят</p>
+    <h2>Чисто, уютно, без страха — так пишут гости, не мы.</h2>
+    <div class="quotes">
+      <figure>
+        <blockquote>«Ходим всей семьёй. Особенно нравится отношение к детям. Лечение без страха и боли.»</blockquote>
+        <figcaption>Mira Abdykarimova · 2ГИС</figcaption>
+      </figure>
+      <figure>
+        <blockquote>«Чистая, уютная стоматология с профессионалами своего дела, приятный персонал.»</blockquote>
+        <figcaption>Камила Арз · 2ГИС</figcaption>
+      </figure>
+      <figure>
+        <blockquote>«Посещаю Inclinic с 2022 года, всё нравится, приветливый персонал, качественно.»</blockquote>
+        <figcaption>Artem Mr · 2ГИС</figcaption>
+      </figure>
+    </div>
+    <p class="fine" style="color:rgba(42,36,32,.7)">Цитаты публичные, 2ГИС. На своём сайте клиники их сейчас нет.</p>
+  </section>
+  <section class="split">
+    <img src="/reception.jpg" alt="Ресепшен. Демо-кадр." />
+    <div class="split-copy">
+      <h2>Запись без ожидания у двери</h2>
+      <p class="muted">Сейчас сайт клиники не работает. Записаться можно по телефону или через 2ГИС. Этот демо-сайт как раз про это: кнопка на виду.</p>
+      <a class="btn" href="tel:+77763332266">Позвонить</a>
+    </div>
+  </section>
+  <section class="split" style="background:var(--stone)">
+    <div class="split-copy">
+      <h2>Кабинет, не конвейер</h2>
+      <p class="muted">Гости отмечают чистоту и спокойствие. Прайс не выдумываем. Когда клиника пришлёт свои кадры — заменим эти.</p>
+    </div>
+    <img src="/macro.jpg" alt="Свет кабинета. Демо-кадр." />
+  </section>
+  <section class="paper">
+    <div class="stills">
+      <figure style="border:0;padding:0">
+        <img src="/tray.jpg" alt="Порядок" />
+        <figcaption>Порядок · демо</figcaption>
+      </figure>
+      <figure style="border:0;padding:0">
+        <img src="/waiting.jpg" alt="Ожидание" />
+        <figcaption>Ожидание · демо</figcaption>
+      </figure>
+      <figure style="border:0;padding:0">
+        <img src="/hero.jpg" alt="Кабинет у окна" />
+        <figcaption>Кабинет у окна · демо</figcaption>
+      </figure>
+    </div>
+  </section>
+  <footer>
+    <div class="foot">
+      <div>
+        <p class="logo">InClinic</p>
+        <p class="muted">ЖК Самал Де Люкс, пр. Достык, 97, Алматы<br />Ежедневно 09:00–21:00</p>
+      </div>
+      <div>
+        <p><a href="tel:+77763332266" style="color:var(--brass)">+7 776 333 2266</a></p>
+        <p><a class="muted" href="https://2gis.kz/almaty/firm/70000001043854986" target="_blank" rel="noreferrer">Карточка 2ГИС · 4.9 / 1089</a></p>
+      </div>
+    </div>
+    <p class="fine">Демо-визуал для портфолио. Не официальный сайт клиники. Цены и лицензии не публикуем — их нет в открытых источниках.</p>
+  </footer>
+</body>
+</html>

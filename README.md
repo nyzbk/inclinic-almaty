@@ -1,2 +1,7 @@
-# inclinic-demo
-InClinic Almaty demo landing — PORT-$10K, not the official clinic site
+# InClinic demo
+
+Демо-лендинг для клиники InClinic, Алматы, Достык 97.
+Не официальный сайт. Визуал сгенерирован. noindex.
+
+Запись: +7 776 333 2266
+2ГИС: https://2gis.kz/almaty/firm/70000001043854986
