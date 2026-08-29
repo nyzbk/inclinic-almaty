@@ -70,7 +70,7 @@
 
   <section class="hero" id="top">
     <div class="hero-sticky">
-      <video id="hero-video" muted playsinline preload="auto" poster="/hero.jpg">
+      <video id="hero-video" muted playsinline preload="auto" poster="/hero.jpg" disablepictureinpicture>
         <source src="/hero.mp4" type="video/mp4" />
       </video>
       <div class="veil"></div>
@@ -167,28 +167,53 @@
       var video = document.getElementById('hero-video');
       var pin = document.getElementById('top');
       if (!video || !pin) return;
+      video.autoplay = false;
+      video.loop = false;
+      video.muted = true;
+      video.playsInline = true;
+      video.controls = false;
       video.pause();
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) { video.loop = true; video.play().catch(function () {}); return; }
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        video.currentTime = 0;
+        return;
+      }
       var raf = 0;
-      function tick() {
-        var total = pin.offsetHeight - window.innerHeight;
-        var top = pin.getBoundingClientRect().top;
-        var scrolled = Math.min(Math.max(-top, 0), Math.max(total, 1));
-        var p = scrolled / Math.max(total, 1);
+      var unlocked = false;
+      var unlocking = false;
+      function progress() {
+        var total = Math.max(pin.offsetHeight - window.innerHeight, 1);
+        var p = Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / total));
         if (video.readyState >= 1 && isFinite(video.duration) && video.duration > 0) {
-          video.currentTime = p * Math.max(video.duration - 0.08, 0);
+          var t = p * Math.max(video.duration - 0.05, 0);
+          if (Math.abs(video.currentTime - t) > 0.01) video.currentTime = t;
         }
         document.documentElement.style.setProperty('--hero-p', p.toFixed(4));
       }
       function onScroll() {
         cancelAnimationFrame(raf);
-        raf = requestAnimationFrame(tick);
+        raf = requestAnimationFrame(progress);
       }
-      video.addEventListener('loadedmetadata', tick);
+      function unlock() {
+        if (unlocked || unlocking) return;
+        unlocking = true;
+        var play = video.play();
+        function freeze() {
+          video.pause();
+          unlocking = false;
+          unlocked = true;
+          progress();
+        }
+        if (play && play.then) play.then(freeze).catch(function () { unlocking = false; });
+        else freeze();
+      }
+      video.addEventListener('play', function () { if (!unlocking) video.pause(); });
+      video.addEventListener('loadedmetadata', progress);
       window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onScroll);
-      tick();
+      window.addEventListener('wheel', unlock, { passive: true, once: true });
+      window.addEventListener('touchstart', unlock, { passive: true, once: true });
+      window.addEventListener('pointerdown', unlock, { passive: true, once: true });
+      progress();
     })();
   </script>
 </body>
